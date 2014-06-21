@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
+
+<title>Practical Machine Learning Course Project</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+</head>
+
+<body>
+<h3>Practical Machine Learning Course Project</h3>
+
+<h2>Title: Predict Human Activity</h2>
+
+<h3>Synopsis</h3>
+
+<p>Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement - a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. The goal of this project will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants of the study<sup>1</sup>. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. </p>
+
+<p>More information and data are available from the source website of the study<sup>1</sup>: <a href="http://groupware.les.inf.puc-rio.br/har">http://groupware.les.inf.puc-rio.br/har</a></p>
+
+<pre>[1] <i>Ugulino, W.; Cardador, D.; Vega, K.; Velloso, E.; Milidiu, R.; Fuks, H.</i> Wearable Computing: Accelerometers' Data Classification of Body Postures and Movements. Proceedings of 21st Brazilian Symposium on Artificial Intelligence. Advances in Artificial Intelligence - SBIA 2012. In: Lecture Notes in Computer Science. , pp. 52-61. Curitiba, PR: Springer Berlin / Heidelberg, 2012. ISBN 978-3-642-34458-9. DOI: 10.1007/978-3-642-34459-6_6.</pre>
+
+<h3>Prediction Problem</h3>
+
+<p>In his second lecture, the Professor of this course introduces the &ldquo;Components of a Predictor&rdquo; and defines six stages:</p>
+
+<p>question -&gt; input data -&gt; features -&gt; algorithm -&gt; parameters -&gt; evaluation</p>
+
+<p>So, we have decided to proceed along this stages and first of all we load the libraries that we will use:</p>
+
+<h3>(1) Question</h3>
+
+<p>As we know, the 6 participants of the study were asked to perform barbell lifts correctly and incorrectly in 5 different ways. The 5 ways, as described in the study<sup>1</sup>, were exactly according to the specification (Class A), throwing the elbows to the front (Class B), lifting the dumbbell only halfway (Class C), lowering the dumbbell only halfway (Class D) and throwing the hips to the front (Class E). Class A corresponds to the specified execution of the exercise, while the other 4 classes correspond to common mistakes. By processing data gathered from accelerometers on the belt, forearm, arm, and dumbell of the participants in a machine learning algorithm, the question is <i>can the appropriate activity quality (class A to E) be predicted</i>?</p>
+
+<h3>(2) Input Data</h3>
+
+<p>The first step is to load the data. </p>
+
+<p>The train data are available from this url: <a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv</a> and the test data are available from this url: <a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv</a>. We can download those data sets using the <i>download.file()</i> command, but we will assume that the data have been previously downloaded to our working directory. Then we will load both data sets and verify they have identical columns.</p>
+
+<pre><code class="r"># Download training data set
+url &lt;- &quot;https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv&quot;
+file &lt;- &quot;pml-training.csv&quot;
+# download.file(url, destfile=file, method=&#39;curl&#39;) Download test data set
+url &lt;- &quot;https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv&quot;
+file &lt;- &quot;pml-testing.csv&quot;
+# download.file(url, destfile=file, method=&#39;curl&#39;)
+
+# Load data (treating empty values as NA)
+trn &lt;- read.csv(&quot;pml-training.csv&quot;, header = T, na.strings = c(&quot;NA&quot;, &quot;&quot;))
+tst &lt;- read.csv(&quot;pml-testing.csv&quot;, header = T, na.strings = c(&quot;NA&quot;, &quot;&quot;))
+
+# Colnames of both sets
+cols_trn &lt;- colnames(trn)
+cols_tst &lt;- colnames(tst)
+
+# Verify that columns are identical in both sets (excluding columns &#39;classe&#39;
+# and &#39;problem_id&#39;)
+all.equal(cols_trn[1:length(cols_trn) - 1], cols_tst[1:length(cols_tst) - 1])
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<h3>(3) Features</h3>
+
+<p>We have verified that both the training and testing set are identical (excluding last column representing the outcome). We decided to eliminate NA and missing data columns:</p>
+
+<pre><code class="r"># Build vector of NA and missing data for dropping
+idx &lt;- as.vector(apply(trn, 2, function(x) length(which(!is.na(x)))))
+toDrop &lt;- c()
+for (cnt in 1:length(idx)) {
+    if (idx[cnt] &lt; nrow(trn)) {
+        toDrop &lt;- c(toDrop, cols_trn[cnt])
+    }
+}
+
+# Drop the missing data and the first 7 columns because they are not
+# necessary for predicting
+trn &lt;- trn[, !(names(trn) %in% toDrop)]
+trn &lt;- trn[, 8:length(colnames(trn))]
+
+tst &lt;- tst[, !(names(tst) %in% toDrop)]
+tst &lt;- tst[, 8:length(colnames(tst))]
+
+# Show remaining columns
+colnames(trn)
+</code></pre>
+
+<pre><code>##  [1] &quot;roll_belt&quot;            &quot;pitch_belt&quot;           &quot;yaw_belt&quot;            
+##  [4] &quot;total_accel_belt&quot;     &quot;gyros_belt_x&quot;         &quot;gyros_belt_y&quot;        
+##  [7] &quot;gyros_belt_z&quot;         &quot;accel_belt_x&quot;         &quot;accel_belt_y&quot;        
+## [10] &quot;accel_belt_z&quot;         &quot;magnet_belt_x&quot;        &quot;magnet_belt_y&quot;       
+## [13] &quot;magnet_belt_z&quot;        &quot;roll_arm&quot;             &quot;pitch_arm&quot;           
+## [16] &quot;yaw_arm&quot;              &quot;total_accel_arm&quot;      &quot;gyros_arm_x&quot;         
+## [19] &quot;gyros_arm_y&quot;          &quot;gyros_arm_z&quot;          &quot;accel_arm_x&quot;         
+## [22] &quot;accel_arm_y&quot;          &quot;accel_arm_z&quot;          &quot;magnet_arm_x&quot;        
+## [25] &quot;magnet_arm_y&quot;         &quot;magnet_arm_z&quot;         &quot;roll_dumbbell&quot;       
+## [28] &quot;pitch_dumbbell&quot;       &quot;yaw_dumbbell&quot;         &quot;total_accel_dumbbell&quot;
+## [31] &quot;gyros_dumbbell_x&quot;     &quot;gyros_dumbbell_y&quot;     &quot;gyros_dumbbell_z&quot;    
+## [34] &quot;accel_dumbbell_x&quot;     &quot;accel_dumbbell_y&quot;     &quot;accel_dumbbell_z&quot;    
+## [37] &quot;magnet_dumbbell_x&quot;    &quot;magnet_dumbbell_y&quot;    &quot;magnet_dumbbell_z&quot;   
+## [40] &quot;roll_forearm&quot;         &quot;pitch_forearm&quot;        &quot;yaw_forearm&quot;         
+## [43] &quot;total_accel_forearm&quot;  &quot;gyros_forearm_x&quot;      &quot;gyros_forearm_y&quot;     
+## [46] &quot;gyros_forearm_z&quot;      &quot;accel_forearm_x&quot;      &quot;accel_forearm_y&quot;     
+## [49] &quot;accel_forearm_z&quot;      &quot;magnet_forearm_x&quot;     &quot;magnet_forearm_y&quot;    
+## [52] &quot;magnet_forearm_z&quot;     &quot;classe&quot;
+</code></pre>
+
+<pre><code class="r">colnames(tst)
+</code></pre>
+
+<pre><code>##  [1] &quot;roll_belt&quot;            &quot;pitch_belt&quot;           &quot;yaw_belt&quot;            
+##  [4] &quot;total_accel_belt&quot;     &quot;gyros_belt_x&quot;         &quot;gyros_belt_y&quot;        
+##  [7] &quot;gyros_belt_z&quot;         &quot;accel_belt_x&quot;         &quot;accel_belt_y&quot;        
+## [10] &quot;accel_belt_z&quot;         &quot;magnet_belt_x&quot;        &quot;magnet_belt_y&quot;       
+## [13] &quot;magnet_belt_z&quot;        &quot;roll_arm&quot;             &quot;pitch_arm&quot;           
+## [16] &quot;yaw_arm&quot;              &quot;total_accel_arm&quot;      &quot;gyros_arm_x&quot;         
+## [19] &quot;gyros_arm_y&quot;          &quot;gyros_arm_z&quot;          &quot;accel_arm_x&quot;         
+## [22] &quot;accel_arm_y&quot;          &quot;accel_arm_z&quot;          &quot;magnet_arm_x&quot;        
+## [25] &quot;magnet_arm_y&quot;         &quot;magnet_arm_z&quot;         &quot;roll_dumbbell&quot;       
+## [28] &quot;pitch_dumbbell&quot;       &quot;yaw_dumbbell&quot;         &quot;total_accel_dumbbell&quot;
+## [31] &quot;gyros_dumbbell_x&quot;     &quot;gyros_dumbbell_y&quot;     &quot;gyros_dumbbell_z&quot;    
+## [34] &quot;accel_dumbbell_x&quot;     &quot;accel_dumbbell_y&quot;     &quot;accel_dumbbell_z&quot;    
+## [37] &quot;magnet_dumbbell_x&quot;    &quot;magnet_dumbbell_y&quot;    &quot;magnet_dumbbell_z&quot;   
+## [40] &quot;roll_forearm&quot;         &quot;pitch_forearm&quot;        &quot;yaw_forearm&quot;         
+## [43] &quot;total_accel_forearm&quot;  &quot;gyros_forearm_x&quot;      &quot;gyros_forearm_y&quot;     
+## [46] &quot;gyros_forearm_z&quot;      &quot;accel_forearm_x&quot;      &quot;accel_forearm_y&quot;     
+## [49] &quot;accel_forearm_z&quot;      &quot;magnet_forearm_x&quot;     &quot;magnet_forearm_y&quot;    
+## [52] &quot;magnet_forearm_z&quot;     &quot;problem_id&quot;
+</code></pre>
+
+<p>As it was discussed in the course there are two levels of covariates creation strategies: Level 1 (raw data to covariates) and Level 2 (covariates to new covariates). Because we are supplied with the raw sensor data, there is no need Level 1 processing. However, some Level 2 processing is certainly worth attempting. So, we will check for covariates that basically have no variablility. We will use nearZeroVar() in caret package for this:</p>
+
+<pre><code class="r">nzv &lt;- nearZeroVar(trn, saveMetrics = TRUE)
+nzv
+</code></pre>
+
+<pre><code>##                      freqRatio percentUnique zeroVar   nzv
+## roll_belt                1.102       6.77811   FALSE FALSE
+## pitch_belt               1.036       9.37723   FALSE FALSE
+## yaw_belt                 1.058       9.97350   FALSE FALSE
+## total_accel_belt         1.063       0.14779   FALSE FALSE
+## gyros_belt_x             1.059       0.71348   FALSE FALSE
+## gyros_belt_y             1.144       0.35165   FALSE FALSE
+## gyros_belt_z             1.066       0.86128   FALSE FALSE
+## accel_belt_x             1.055       0.83580   FALSE FALSE
+## accel_belt_y             1.114       0.72877   FALSE FALSE
+## accel_belt_z             1.079       1.52380   FALSE FALSE
+## magnet_belt_x            1.090       1.66650   FALSE FALSE
+## magnet_belt_y            1.100       1.51870   FALSE FALSE
+## magnet_belt_z            1.006       2.32902   FALSE FALSE
+## roll_arm                52.338      13.52563   FALSE FALSE
+## pitch_arm               87.256      15.73234   FALSE FALSE
+## yaw_arm                 33.029      14.65702   FALSE FALSE
+## total_accel_arm          1.025       0.33636   FALSE FALSE
+## gyros_arm_x              1.016       3.27693   FALSE FALSE
+## gyros_arm_y              1.454       1.91622   FALSE FALSE
+## gyros_arm_z              1.111       1.26389   FALSE FALSE
+## accel_arm_x              1.017       3.95984   FALSE FALSE
+## accel_arm_y              1.140       2.73672   FALSE FALSE
+## accel_arm_z              1.128       4.03629   FALSE FALSE
+## magnet_arm_x             1.000       6.82397   FALSE FALSE
+## magnet_arm_y             1.057       4.44399   FALSE FALSE
+## magnet_arm_z             1.036       6.44685   FALSE FALSE
+## roll_dumbbell            1.022      83.78351   FALSE FALSE
+## pitch_dumbbell           2.277      81.22516   FALSE FALSE
+## yaw_dumbbell             1.132      83.14137   FALSE FALSE
+## total_accel_dumbbell     1.073       0.21914   FALSE FALSE
+## gyros_dumbbell_x         1.003       1.22821   FALSE FALSE
+## gyros_dumbbell_y         1.265       1.41678   FALSE FALSE
+## gyros_dumbbell_z         1.060       1.04984   FALSE FALSE
+## accel_dumbbell_x         1.018       2.16594   FALSE FALSE
+## accel_dumbbell_y         1.053       2.37489   FALSE FALSE
+## accel_dumbbell_z         1.133       2.08949   FALSE FALSE
+## magnet_dumbbell_x        1.098       5.74865   FALSE FALSE
+## magnet_dumbbell_y        1.198       4.30129   FALSE FALSE
+## magnet_dumbbell_z        1.021       3.44511   FALSE FALSE
+## roll_forearm            11.589      11.08959   FALSE FALSE
+## pitch_forearm           65.983      14.85577   FALSE FALSE
+## yaw_forearm             15.323      10.14677   FALSE FALSE
+## total_accel_forearm      1.129       0.35674   FALSE FALSE
+## gyros_forearm_x          1.059       1.51870   FALSE FALSE
+## gyros_forearm_y          1.037       3.77637   FALSE FALSE
+## gyros_forearm_z          1.123       1.56457   FALSE FALSE
+## accel_forearm_x          1.126       4.04648   FALSE FALSE
+## accel_forearm_y          1.059       5.11161   FALSE FALSE
+## accel_forearm_z          1.006       2.95587   FALSE FALSE
+## magnet_forearm_x         1.012       7.76679   FALSE FALSE
+## magnet_forearm_y         1.247       9.54031   FALSE FALSE
+## magnet_forearm_z         1.000       8.57711   FALSE FALSE
+## classe                   1.470       0.02548   FALSE FALSE
+</code></pre>
+
+<p>As we can see all of the near zero variance variables are FALSE, therefore there is no need to eliminate any covariates due to lack of variablility.</p>
+
+<h3>(4) Algorithm</h3>
+
+<p>We have a large training set (19,622 entries) and a small testing set (20 entries). Instead of performing the algorithm on the entire training set, as it would be time consuming and would not allow for an attempt on a testing set, we chose to divide the given training set into four roughly equal sets, each of which was then split into a training set (comprising 60% of the entries) and a testing set (comprising 40% of the entries).</p>
+
+<pre><code class="r"># Divide the training set into 4 roughly equal sets
+set.seed(777)
+ids_small &lt;- createDataPartition(y = trn$classe, p = 0.25, list = FALSE)
+trn_small1 &lt;- trn[ids_small, ]
+trn_remain &lt;- trn[-ids_small, ]
+set.seed(777)
+ids_small &lt;- createDataPartition(y = trn_remain$classe, p = 0.33, list = FALSE)
+trn_small2 &lt;- trn_remain[ids_small, ]
+trn_remain &lt;- trn_remain[-ids_small, ]
+set.seed(777)
+ids_small &lt;- createDataPartition(y = trn_remain$classe, p = 0.5, list = FALSE)
+trn_small3 &lt;- trn_remain[ids_small, ]
+trn_small4 &lt;- trn_remain[-ids_small, ]
+rm(ids_small, trn_remain)
+
+# Divide each of these 4 sets into training (60%) and test (40%) sets
+set.seed(777)
+inTrain &lt;- createDataPartition(y = trn_small1$classe, p = 0.6, list = FALSE)
+small_trn1 &lt;- trn_small1[inTrain, ]
+small_tst1 &lt;- trn_small1[-inTrain, ]
+set.seed(777)
+inTrain &lt;- createDataPartition(y = trn_small2$classe, p = 0.6, list = FALSE)
+small_trn2 &lt;- trn_small2[inTrain, ]
+small_tst2 &lt;- trn_small2[-inTrain, ]
+set.seed(777)
+inTrain &lt;- createDataPartition(y = trn_small3$classe, p = 0.6, list = FALSE)
+small_trn3 &lt;- trn_small3[inTrain, ]
+small_tst3 &lt;- trn_small3[-inTrain, ]
+set.seed(777)
+inTrain &lt;- createDataPartition(y = trn_small4$classe, p = 0.6, list = FALSE)
+small_trn4 &lt;- trn_small4[inTrain, ]
+small_tst4 &lt;- trn_small4[-inTrain, ]
+</code></pre>
+
+<h3>(5) Paramethers</h3>
+
+<p>We decided first to try classification trees and then attemp random forest models with preprocessing and cross validation, of course, using the caret package.</p>
+
+<h3>(6) Evaluation</h3>
+
+<h3>(6.a) Classification Trees</h3>
+
+<p>First, we run a classification tree with no extra features:</p>
+
+<pre><code class="r"># Train a tree on training set 1 with no extra features
+set.seed(777)
+modFit &lt;- train(small_trn1$classe ~ ., data = small_trn1, method = &quot;rpart&quot;)
+print(modFit, digits = 3)
+</code></pre>
+
+<pre><code>## CART 
+## 
+## 2946 samples
+##   52 predictors
+##    5 classes: &#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;, &#39;E&#39; 
+## 
+## No pre-processing
+## Resampling: Bootstrapped (25 reps) 
+## 
+## Summary of sample sizes: 2946, 2946, 2946, 2946, 2946, 2946, ... 
+## 
+## Resampling results across tuning parameters:
+## 
+##   cp      Accuracy  Kappa   Accuracy SD  Kappa SD
+##   0.0337  0.547     0.422   0.0502       0.0765  
+##   0.0376  0.504     0.359   0.0762       0.119   
+##   0.114   0.322     0.0519  0.0402       0.0601  
+## 
+## Accuracy was used to select the optimal model using  the largest value.
+## The final value used for the model was cp = 0.0337.
+</code></pre>
+
+<p>We can see that the accuracy reached is 0.547, which is poor.</p>
+
+<pre><code class="r">print(modFit$finalModel, digits = 3)
+</code></pre>
+
+<pre><code>## n= 2946 
+## 
+## node), split, n, loss, yval, (yprob)
+##       * denotes terminal node
+## 
+##   1) root 2946 2110 A (0.28 0.19 0.17 0.16 0.18)  
+##     2) roll_belt&lt; 130 2698 1860 A (0.31 0.21 0.19 0.18 0.11)  
+##       4) pitch_forearm&lt; -34.5 215    0 A (1 0 0 0 0) *
+##       5) pitch_forearm&gt;=-34.5 2483 1860 A (0.25 0.23 0.21 0.19 0.12)  
+##        10) yaw_belt&gt;=170 131   13 A (0.9 0.053 0 0.038 0.0076) *
+##        11) yaw_belt&lt; 170 2352 1790 B (0.21 0.24 0.22 0.2 0.13)  
+##          22) magnet_dumbbell_z&lt; -38.5 714  438 A (0.39 0.34 0.073 0.18 0.028) *
+##          23) magnet_dumbbell_z&gt;=-38.5 1638 1180 C (0.14 0.2 0.28 0.21 0.17)  
+##            46) pitch_belt&lt; -43.2 93    6 B (0 0.94 0.032 0.011 0.022) *
+##            47) pitch_belt&gt;=-43.2 1545 1090 C (0.14 0.15 0.3 0.23 0.18)  
+##              94) accel_dumbbell_y&lt; -35.5 149   24 C (0.0067 0.067 0.84 0.04 0.047) *
+##              95) accel_dumbbell_y&gt;=-35.5 1396 1050 D (0.16 0.16 0.24 0.25 0.19)  
+##               190) magnet_dumbbell_y&lt; 276 573  316 C (0.22 0.066 0.45 0.16 0.11) *
+##               191) magnet_dumbbell_y&gt;=276 823  567 D (0.12 0.23 0.094 0.31 0.25)  
+##                 382) accel_forearm_x&gt;=-100 510  342 E (0.14 0.31 0.11 0.12 0.33) *
+##                 383) accel_forearm_x&lt; -100 313  118 D (0.083 0.1 0.073 0.62 0.12) *
+##     3) roll_belt&gt;=130 248    4 E (0.016 0 0 0 0.98) *
+</code></pre>
+
+<pre><code class="r">rpart.plot(modFit$finalModel)
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAllBMVEX9/v0AAAAAACsAAFUAKysAK1UAK4AAVaorAAArACsrAFUrKwArKysrK4ArVVUrVaorgNRVAABVACtVAFVVKwBVK4BVVQBVVStVVVVVqtRVqv+AKwCAKyuAK1WAgFWAqoCA1KqA1NSA1P+qVQCqVSuqgCuq/6qq///UgCvU/6rU/9TU///9/v3/qlX/1ID//6r//9T///+hGhOrAAAAMnRSTlP//////////////////////////////////////////////////////////wD//////8SW3K4AAAAJcEhZcwAACxIAAAsSAdLdfvwAABfgSURBVHic7d0Le9s2mgXgod1aatOLMtN0W7szsxtt15wmks3//+eWuBAEKYrE5cONOOeZjmNd6IivQEKSg/O3r0iV+VvqvwCSJoCvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNICvNDHgu2CJ8JffawBfaQBfaQBfaQBfaZLAX5rn/n/qm9P0qu768/wO7y+Pr13XNs3D5667HvkXwHuFDr5ZiLjGEv7t40F9e+a3evvY9PDX44E9AdjV56cvGvzST27IHtdOQwXfNEuHYrH/O4H3zfHhsxitM/ifjsx+uOr3l6YRru/9n56FO4Pnlzx9Yfe8yCF//0dDfiNk8Evu/f5n10n43o6N1vbh8wz+6UvbPF+Pp+78+DqO+JH77dNf/FDfX9Q/Izi8vPfWT0buJiJ8z9mj9yP7dHOo7y9r1ZFAwrfDibwbzvF9+qdGC3iKxIfv/zCDf2aXtfzMfFoa8Rq8vCfgvZPViO+mk7vhHL8Ar53jAe8USvi3T1+686mfpPVK/QA+3cL3E/Plczyb9p3kVbezegHPniHn21l90w3HB/ZKUL3UA/x6KOHf//l6/fE//+iJDv0f3/o/zOG7lVn9hcuxy8/qED9EvY5nX2av4wX89fjctc9vf+83fgC8QUgP9f/7P398Zn7NQTpr8EGifjLnPj9f2MvCnwFvEFL49rdDd+Fvx7QnMfJW4PuBy6LN3b3gT917/6w79AeHZ8AbhBT+0h+J2Yzs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" alt="plot of chunk treeplot1"/> </p>
+
+<p>Now, we do the same but with both preprocessing and cross validation:</p>
+
+<pre><code class="r"># Train on training set 1 with both preprocessing and cross validation.
+set.seed(777)
+modFit &lt;- train(small_trn1$classe ~ ., preProcess = c(&quot;center&quot;, &quot;scale&quot;), trControl = trainControl(method = &quot;cv&quot;, 
+    number = 4), data = small_trn1, method = &quot;rpart&quot;)
+print(modFit, digits = 3)
+</code></pre>
+
+<pre><code>## CART 
+## 
+## 2946 samples
+##   52 predictors
+##    5 classes: &#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;, &#39;E&#39; 
+## 
+## Pre-processing: centered, scaled 
+## Resampling: Cross-Validated (4 fold) 
+## 
+## Summary of sample sizes: 2209, 2209, 2211, 2209 
+## 
+## Resampling results across tuning parameters:
+## 
+##   cp      Accuracy  Kappa  Accuracy SD  Kappa SD
+##   0.0337  0.564     0.447  0.0325       0.0442  
+##   0.0376  0.512     0.359  0.0999       0.162   
+##   0.114   0.343     0.089  0.0393       0.0595  
+## 
+## Accuracy was used to select the optimal model using  the largest value.
+## The final value used for the model was cp = 0.0337.
+</code></pre>
+
+<p>Now the accuracy is 0.564, which is still poor.</p>
+
+<pre><code class="r"># Run against testing set 1 with both preprocessing and cross validation
+pred &lt;- predict(modFit, newdata = small_tst1)
+print(confusionMatrix(pred, small_tst1$classe), digits = 4)
+</code></pre>
+
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   A   B   C   D   E
+##          A 397 119  38  92  26
+##          B   1  71   6   3   2
+##          C  88  38 227  60  48
+##          D  13  30  13 125  25
+##          E  59 122  58  41 259
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.5502          
+##                  95% CI : (0.5279, 0.5724)
+##     No Information Rate : 0.2845          
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+##                                           
+##                   Kappa : 0.4275          
+##  Mcnemar&#39;s Test P-Value : &lt; 2.2e-16       
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity            0.7115  0.18684   0.6637  0.38941   0.7194
+## Specificity            0.8040  0.99241   0.8555  0.95061   0.8251
+## Pos Pred Value         0.5908  0.85542   0.4924  0.60680   0.4805
+## Neg Pred Value         0.8751  0.83546   0.9233  0.88832   0.9290
+## Prevalence             0.2845  0.19378   0.1744  0.16369   0.1836
+## Detection Rate         0.2024  0.03621   0.1158  0.06374   0.1321
+## Detection Prevalence   0.3427  0.04233   0.2351  0.10505   0.2749
+## Balanced Accuracy      0.7577  0.58963   0.7596  0.67001   0.7723
+</code></pre>
+
+<p>Then the overall accuracy is 0.5502, so we can see that the impact of incorporating both preprocessing and cross validation appeared to show a minimal improvement.</p>
+
+<h3>(6.b) Random Forest</h3>
+
+<p>First we decided to assess the impact of including preprocessing in the training:</p>
+
+<pre><code class="r"># Train on training set 1 with only cross validation
+set.seed(777)
+modFit &lt;- train(small_trn1$classe ~ ., method = &quot;rf&quot;, trControl = trainControl(method = &quot;cv&quot;, 
+    number = 4), data = small_trn1)
+print(modFit, digits = 3)
+</code></pre>
+
+<pre><code>## Random Forest 
+## 
+## 2946 samples
+##   52 predictors
+##    5 classes: &#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;, &#39;E&#39; 
+## 
+## No pre-processing
+## Resampling: Cross-Validated (4 fold) 
+## 
+## Summary of sample sizes: 2209, 2209, 2211, 2209 
+## 
+## Resampling results across tuning parameters:
+## 
+##   mtry  Accuracy  Kappa  Accuracy SD  Kappa SD
+##   2     0.951     0.938  0.00378      0.00483 
+##   27    0.952     0.94   0.00403      0.00507 
+##   52    0.943     0.928  0.00681      0.00857 
+## 
+## Accuracy was used to select the optimal model using  the largest value.
+## The final value used for the model was mtry = 27.
+</code></pre>
+
+<pre><code class="r"># Run against testing set 1
+pred &lt;- predict(modFit, newdata = small_tst1)
+print(confusionMatrix(pred, small_tst1$classe), digits = 4)
+</code></pre>
+
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   A   B   C   D   E
+##          A 546  11   0   1   0
+##          B   2 357  11   3   5
+##          C   8  10 329  14   1
+##          D   1   0   0 300   0
+##          E   1   2   2   3 354
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.9618          
+##                  95% CI : (0.9523, 0.9698)
+##     No Information Rate : 0.2845          
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+##                                           
+##                   Kappa : 0.9516          
+##  Mcnemar&#39;s Test P-Value : 5.895e-05       
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity            0.9785   0.9395   0.9620   0.9346   0.9833
+## Specificity            0.9914   0.9867   0.9796   0.9994   0.9950
+## Pos Pred Value         0.9785   0.9444   0.9088   0.9967   0.9779
+## Neg Pred Value         0.9914   0.9855   0.9919   0.9873   0.9962
+## Prevalence             0.2845   0.1938   0.1744   0.1637   0.1836
+## Detection Rate         0.2784   0.1820   0.1678   0.1530   0.1805
+## Detection Prevalence   0.2845   0.1928   0.1846   0.1535   0.1846
+## Balanced Accuracy      0.9850   0.9631   0.9708   0.9670   0.9892
+</code></pre>
+
+<p>As we can see the training accuracy reached is 0.952 at mtry=27 with only cross validation. Now we will train only both preprocessing and cross validation to see the impact.</p>
+
+<pre><code class="r"># Train on training set 1 with only both preprocessing and cross validation
+set.seed(777)
+modFit &lt;- train(small_trn1$classe ~ ., method = &quot;rf&quot;, preProcess = c(&quot;center&quot;, 
+    &quot;scale&quot;), trControl = trainControl(method = &quot;cv&quot;, number = 4), data = small_trn1)
+print(modFit, digits = 3)
+</code></pre>
+
+<pre><code>## Random Forest 
+## 
+## 2946 samples
+##   52 predictors
+##    5 classes: &#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;, &#39;E&#39; 
+## 
+## Pre-processing: centered, scaled 
+## Resampling: Cross-Validated (4 fold) 
+## 
+## Summary of sample sizes: 2209, 2209, 2211, 2209 
+## 
+## Resampling results across tuning parameters:
+## 
+##   mtry  Accuracy  Kappa  Accuracy SD  Kappa SD
+##   2     0.95      0.937  0.00455      0.00578 
+##   27    0.954     0.942  0.00458      0.00578 
+##   52    0.944     0.929  0.00654      0.00823 
+## 
+## Accuracy was used to select the optimal model using  the largest value.
+## The final value used for the model was mtry = 27.
+</code></pre>
+
+<pre><code class="r"># Run against testing set 1
+pred &lt;- predict(modFit, newdata = small_tst1)
+print(confusionMatrix(pred, small_tst1$classe), digits = 4)
+</code></pre>
+
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   A   B   C   D   E
+##          A 546  11   0   1   0
+##          B   2 358   9   2   5
+##          C   9   9 329  16   1
+##          D   0   0   2 299   0
+##          E   1   2   2   3 354
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.9618          
+##                  95% CI : (0.9523, 0.9698)
+##     No Information Rate : 0.2845          
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+##                                           
+##                   Kappa : 0.9516          
+##  Mcnemar&#39;s Test P-Value : 0.0001384       
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity            0.9785   0.9421   0.9620   0.9315   0.9833
+## Specificity            0.9914   0.9886   0.9784   0.9988   0.9950
+## Pos Pred Value         0.9785   0.9521   0.9038   0.9934   0.9779
+## Neg Pred Value         0.9914   0.9861   0.9919   0.9867   0.9962
+## Prevalence             0.2845   0.1938   0.1744   0.1637   0.1836
+## Detection Rate         0.2784   0.1826   0.1678   0.1525   0.1805
+## Detection Prevalence   0.2845   0.1917   0.1856   0.1535   0.1846
+## Balanced Accuracy      0.9850   0.9654   0.9702   0.9651   0.9892
+</code></pre>
+
+<p>Now the training accuracy reached is 0.954 at mtry=27, ie, preprocessing is upping the accuracy rate from 0.952 to 0.954, therefore we decided to apply both preprocessing and cross validation to the remaining 3 data sets.</p>
+
+<pre><code class="r"># Train on training set 2 with only both preprocessing and cross validation
+set.seed(777)
+modFit &lt;- train(small_trn2$classe ~ ., method = &quot;rf&quot;, preProcess = c(&quot;center&quot;, 
+    &quot;scale&quot;), trControl = trainControl(method = &quot;cv&quot;, number = 4), data = small_trn2)
+print(modFit, digits = 3)
+</code></pre>
+
+<pre><code>## Random Forest 
+## 
+## 2917 samples
+##   52 predictors
+##    5 classes: &#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;, &#39;E&#39; 
+## 
+## Pre-processing: centered, scaled 
+## Resampling: Cross-Validated (4 fold) 
+## 
+## Summary of sample sizes: 2189, 2186, 2187, 2189 
+## 
+## Resampling results across tuning parameters:
+## 
+##   mtry  Accuracy  Kappa  Accuracy SD  Kappa SD
+##   2     0.946     0.931  0.0095       0.012   
+##   27    0.949     0.935  0.00672      0.00852 
+##   52    0.946     0.932  0.00427      0.00538 
+## 
+## Accuracy was used to select the optimal model using  the largest value.
+## The final value used for the model was mtry = 27.
+</code></pre>
+
+<pre><code class="r"># Run against testing set 1
+pred &lt;- predict(modFit, newdata = small_tst2)
+print(confusionMatrix(pred, small_tst2$classe), digits = 4)
+</code></pre>
+
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   A   B   C   D   E
+##          A 548  12   0   0   0
+##          B   2 355  14   4   2
+##          C   2   7 311   5   3
+##          D   0   1  13 307   9
+##          E   0   1   0   2 343
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.9603          
+##                  95% CI : (0.9507, 0.9686)
+##     No Information Rate : 0.2844          
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+##                                           
+##                   Kappa : 0.9498          
+##  Mcnemar&#39;s Test P-Value : NA              
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity            0.9928   0.9441   0.9201   0.9654   0.9608
+## Specificity            0.9914   0.9859   0.9894   0.9858   0.9981
+## Pos Pred Value         0.9786   0.9416   0.9482   0.9303   0.9913
+## Neg Pred Value         0.9971   0.9866   0.9833   0.9932   0.9912
+## Prevalence             0.2844   0.1937   0.1741   0.1638   0.1839
+## Detection Rate         0.2823   0.1829   0.1602   0.1582   0.1767
+## Detection Prevalence   0.2885   0.1942   0.1690   0.1700   0.1783
+## Balanced Accuracy      0.9921   0.9650   0.9548   0.9756   0.9794
+</code></pre>
+
+<p>Now the training accuracy reached is 0.949 at mtry=27. For testing the overall accuracy is 0.9603.</p>
+
+<pre><code class="r"># Train on training set 3 with only both preprocessing and cross validation
+set.seed(777)
+modFit &lt;- train(small_trn3$classe ~ ., method = &quot;rf&quot;, preProcess = c(&quot;center&quot;, 
+    &quot;scale&quot;), trControl = trainControl(method = &quot;cv&quot;, number = 4), data = small_trn3)
+print(modFit, digits = 3)
+</code></pre>
+
+<pre><code>## Random Forest 
+## 
+## 2960 samples
+##   52 predictors
+##    5 classes: &#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;, &#39;E&#39; 
+## 
+## Pre-processing: centered, scaled 
+## Resampling: Cross-Validated (4 fold) 
+## 
+## Summary of sample sizes: 2221, 2219, 2219, 2221 
+## 
+## Resampling results across tuning parameters:
+## 
+##   mtry  Accuracy  Kappa  Accuracy SD  Kappa SD
+##   2     0.946     0.932  0.01         0.0127  
+##   27    0.947     0.933  0.0106       0.0134  
+##   52    0.939     0.923  0.0114       0.0145  
+## 
+## Accuracy was used to select the optimal model using  the largest value.
+## The final value used for the model was mtry = 27.
+</code></pre>
+
+<pre><code class="r"># Run against testing set 3
+pred &lt;- predict(modFit, newdata = small_tst3)
+print(confusionMatrix(pred, small_tst3$classe), digits = 4)
+</code></pre>
+
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   A   B   C   D   E
+##          A 555  14   1   0   0
+##          B   2 353  14   2   2
+##          C   1  10 329   8   1
+##          D   2   3   0 311   5
+##          E   0   1   0   2 354
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.9655          
+##                  95% CI : (0.9564, 0.9731)
+##     No Information Rate : 0.2843          
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+##                                           
+##                   Kappa : 0.9563          
+##  Mcnemar&#39;s Test P-Value : NA              
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity            0.9911   0.9265   0.9564   0.9628   0.9779
+## Specificity            0.9894   0.9874   0.9877   0.9939   0.9981
+## Pos Pred Value         0.9737   0.9464   0.9427   0.9688   0.9916
+## Neg Pred Value         0.9964   0.9825   0.9907   0.9927   0.9950
+## Prevalence             0.2843   0.1934   0.1746   0.1640   0.1838
+## Detection Rate         0.2817   0.1792   0.1670   0.1579   0.1797
+## Detection Prevalence   0.2893   0.1893   0.1772   0.1629   0.1812
+## Balanced Accuracy      0.9902   0.9570   0.9720   0.9784   0.9880
+</code></pre>
+
+<p>Now the training accuracy reached is 0.947 at mtry=27. For testing the overall accuracy is 0.9655.</p>
+
+<pre><code class="r"># Train on training set 4 with only both preprocessing and cross validation
+set.seed(777)
+modFit &lt;- train(small_trn4$classe ~ ., method = &quot;rf&quot;, preProcess = c(&quot;center&quot;, 
+    &quot;scale&quot;), trControl = trainControl(method = &quot;cv&quot;, number = 4), data = small_trn4)
+print(modFit, digits = 3)
+</code></pre>
+
+<pre><code>## Random Forest 
+## 
+## 2958 samples
+##   52 predictors
+##    5 classes: &#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;, &#39;E&#39; 
+## 
+## Pre-processing: centered, scaled 
+## Resampling: Cross-Validated (4 fold) 
+## 
+## Summary of sample sizes: 2219, 2218, 2218, 2219 
+## 
+## Resampling results across tuning parameters:
+## 
+##   mtry  Accuracy  Kappa  Accuracy SD  Kappa SD
+##   2     0.953     0.941  0.00585      0.00739 
+##   27    0.947     0.932  0.00773      0.00979 
+##   52    0.94      0.924  0.0164       0.0207  
+## 
+## Accuracy was used to select the optimal model using  the largest value.
+## The final value used for the model was mtry = 2.
+</code></pre>
+
+<pre><code class="r"># Run against testing set 4
+pred &lt;- predict(modFit, newdata = small_tst4)
+print(confusionMatrix(pred, small_tst4$classe), digits = 4)
+</code></pre>
+
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   A   B   C   D   E
+##          A 557  15   0   1   0
+##          B   2 353  18   0   0
+##          C   0  13 318   9   9
+##          D   1   0   7 312   1
+##          E   0   0   0   1 352
+## 
+## Overall Statistics
+##                                          
+##                Accuracy : 0.9609         
+##                  95% CI : (0.9514, 0.969)
+##     No Information Rate : 0.2844         
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16      
+##                                          
+##                   Kappa : 0.9505         
+##  Mcnemar&#39;s Test P-Value : NA             
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity            0.9946   0.9265   0.9271   0.9659   0.9724
+## Specificity            0.9886   0.9874   0.9809   0.9945   0.9994
+## Pos Pred Value         0.9721   0.9464   0.9112   0.9720   0.9972
+## Neg Pred Value         0.9979   0.9825   0.9846   0.9933   0.9938
+## Prevalence             0.2844   0.1935   0.1742   0.1640   0.1838
+## Detection Rate         0.2829   0.1793   0.1615   0.1585   0.1788
+## Detection Prevalence   0.2910   0.1894   0.1772   0.1630   0.1793
+## Balanced Accuracy      0.9916   0.9570   0.9540   0.9802   0.9859
+</code></pre>
+
+<p>And finally, the training accuracy reached for the lasta data set is 0.953 at mtry=2. For testing the overall accuracy is 0.9609.</p>
+
+<h3>Conclusion</h3>
+
+<p>By applying these models we conclude that the best accuracy is reached <b>when we use a random forest model only with both preprocessing and cross validation</b>. And the best accuracy rate is when we use the training set 3, therefore we use those result to submit this course project.</p>
+
+<pre><code class="r"># Train on training set 3 with only both preprocessing and cross validation
+set.seed(777)
+modFit &lt;- train(small_trn3$classe ~ ., method = &quot;rf&quot;, preProcess = c(&quot;center&quot;, 
+    &quot;scale&quot;), trControl = trainControl(method = &quot;cv&quot;, number = 4), data = small_trn3)
+print(modFit, digits = 3)
+</code></pre>
+
+<pre><code>## Random Forest 
+## 
+## 2960 samples
+##   52 predictors
+##    5 classes: &#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;, &#39;E&#39; 
+## 
+## Pre-processing: centered, scaled 
+## Resampling: Cross-Validated (4 fold) 
+## 
+## Summary of sample sizes: 2221, 2219, 2219, 2221 
+## 
+## Resampling results across tuning parameters:
+## 
+##   mtry  Accuracy  Kappa  Accuracy SD  Kappa SD
+##   2     0.946     0.932  0.01         0.0127  
+##   27    0.947     0.933  0.0106       0.0134  
+##   52    0.939     0.923  0.0114       0.0145  
+## 
+## Accuracy was used to select the optimal model using  the largest value.
+## The final value used for the model was mtry = 27.
+</code></pre>
+
+<pre><code class="r"># Run against testing set 3
+pred &lt;- predict(modFit, newdata = small_tst3)
+print(confusionMatrix(pred, small_tst3$classe), digits = 4)
+</code></pre>
+
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   A   B   C   D   E
+##          A 555  14   1   0   0
+##          B   2 353  14   2   2
+##          C   1  10 329   8   1
+##          D   2   3   0 311   5
+##          E   0   1   0   2 354
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.9655          
+##                  95% CI : (0.9564, 0.9731)
+##     No Information Rate : 0.2843          
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+##                                           
+##                   Kappa : 0.9563          
+##  Mcnemar&#39;s Test P-Value : NA              
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity            0.9911   0.9265   0.9564   0.9628   0.9779
+## Specificity            0.9894   0.9874   0.9877   0.9939   0.9981
+## Pos Pred Value         0.9737   0.9464   0.9427   0.9688   0.9916
+## Neg Pred Value         0.9964   0.9825   0.9907   0.9927   0.9950
+## Prevalence             0.2843   0.1934   0.1746   0.1640   0.1838
+## Detection Rate         0.2817   0.1792   0.1670   0.1579   0.1797
+## Detection Prevalence   0.2893   0.1893   0.1772   0.1629   0.1812
+## Balanced Accuracy      0.9902   0.9570   0.9720   0.9784   0.9880
+</code></pre>
+
+<p>So we run against the test set provided in the course project and get the final result:</p>
+
+<pre><code class="r"># Run against 20 testing set provided in the course for this project
+print(predict(modFit, newdata = tst))
+</code></pre>
+
+<pre><code>##  [1] B A A A A E D D A A B C B A E E A D B B
+## Levels: A B C D E
+</code></pre>
+
+<p>(cc) mhsilvav</p>
+
+</body>
+
+</html>
+

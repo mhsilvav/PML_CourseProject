@@ -1,0 +1,304 @@
+### Practical Machine Learning Course Project
+
+## Title: Predict Human Activity 
+
+### Synopsis
+
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement - a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. The goal of this project will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants of the study<sup>1</sup>. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. 
+
+More information and data are available from the source website of the study<sup>1</sup>: http://groupware.les.inf.puc-rio.br/har
+
+<pre>[1] <i>Ugulino, W.; Cardador, D.; Vega, K.; Velloso, E.; Milidiu, R.; Fuks, H.</i> Wearable Computing: Accelerometers' Data Classification of Body Postures and Movements. Proceedings of 21st Brazilian Symposium on Artificial Intelligence. Advances in Artificial Intelligence - SBIA 2012. In: Lecture Notes in Computer Science. , pp. 52-61. Curitiba, PR: Springer Berlin / Heidelberg, 2012. ISBN 978-3-642-34458-9. DOI: 10.1007/978-3-642-34459-6_6.</pre>
+
+### Prediction Problem
+
+In his second lecture, the Professor of this course introduces the "Components of a Predictor" and defines six stages:
+
+question -> input data -> features -> algorithm -> parameters -> evaluation
+
+So, we have decided to proceed along this stages and first of all we load the libraries that we will use:
+
+```{r libraries, echo=FALSE, cache=TRUE, warning=FALSE, results='hide', cache.lazy=FALSE, message=FALSE}
+library(AppliedPredictiveModeling)
+library(caret)
+library(rpart.plot)
+library(randomForest)
+```
+
+### (1) Question
+
+As we know, the 6 participants of the study were asked to perform barbell lifts correctly and incorrectly in 5 different ways. The 5 ways, as described in the study<sup>1</sup>, were exactly according to the specification (Class A), throwing the elbows to the front (Class B), lifting the dumbbell only halfway (Class C), lowering the dumbbell only halfway (Class D) and throwing the hips to the front (Class E). Class A corresponds to the specified execution of the exercise, while the other 4 classes correspond to common mistakes. By processing data gathered from accelerometers on the belt, forearm, arm, and dumbell of the participants in a machine learning algorithm, the question is <i>can the appropriate activity quality (class A to E) be predicted</i>?
+
+### (2) Input Data
+
+The first step is to load the data. 
+
+The train data are available from this url: https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv and the test data are available from this url: https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv. We can download those data sets using the <i>download.file()</i> command, but we will assume that the data have been previously downloaded to our working directory. Then we will load both data sets and verify they have identical columns.
+
+```{r input, cache=TRUE}
+#Download training data set
+url <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+file <- "pml-training.csv"
+#download.file(url, destfile=file, method="curl")
+#Download test data set
+url <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+file <- "pml-testing.csv"
+#download.file(url, destfile=file, method="curl")
+
+# Load data (treating empty values as NA)
+trn<- read.csv("pml-training.csv", header=T, na.strings=c("NA",""))
+tst<- read.csv("pml-testing.csv", header=T, na.strings=c("NA",""))
+
+# Colnames of both sets
+cols_trn <- colnames(trn)
+cols_tst<- colnames(tst)
+
+# Verify that columns are identical in both sets (excluding columns 'classe' and 'problem_id')
+all.equal(cols_trn[1:length(cols_trn)-1], cols_tst[1:length(cols_tst)-1])
+
+```
+
+### (3) Features
+
+We have verified that both the training and testing set are identical (excluding last column representing the outcome). We decided to eliminate NA and missing data columns:
+
+```{r features, cache=TRUE}
+# Build vector of NA and missing data for dropping
+idx <- as.vector(apply(trn, 2, function(x) length(which(!is.na(x)))))
+toDrop <- c()
+for (cnt in 1:length(idx)) {
+        if (idx[cnt] < nrow(trn)) {
+                toDrop <- c(toDrop, cols_trn[cnt])
+        }
+}
+
+# Drop the missing data and the first 7 columns because they are not necessary for predicting
+trn <- trn[,!(names(trn) %in% toDrop)]
+trn <- trn[,8:length(colnames(trn))]
+
+tst <- tst[,!(names(tst) %in% toDrop)]
+tst <- tst[,8:length(colnames(tst))]
+
+# Show remaining columns
+colnames(trn)
+colnames(tst)
+
+```
+
+As it was discussed in the course there are two levels of covariates creation strategies: Level 1 (raw data to covariates) and Level 2 (covariates to new covariates). Because we are supplied with the raw sensor data, there is no need Level 1 processing. However, some Level 2 processing is certainly worth attempting. So, we will check for covariates that basically have no variablility. We will use nearZeroVar() in caret package for this:
+        
+
+```{r nzv, cache=TRUE}
+nzv <- nearZeroVar(trn, saveMetrics=TRUE)
+nzv
+
+```
+
+As we can see all of the near zero variance variables are FALSE, therefore there is no need to eliminate any covariates due to lack of variablility.
+
+### (4) Algorithm
+
+We have a large training set (19,622 entries) and a small testing set (20 entries). Instead of performing the algorithm on the entire training set, as it would be time consuming and would not allow for an attempt on a testing set, we chose to divide the given training set into four roughly equal sets, each of which was then split into a training set (comprising 60% of the entries) and a testing set (comprising 40% of the entries).
+
+```{r algorithm, cache=TRUE}
+# Divide the training set into 4 roughly equal sets
+set.seed(777)
+ids_small <- createDataPartition(y=trn$classe, p=0.25, list=FALSE)
+trn_small1 <- trn[ids_small,]
+trn_remain <- trn[-ids_small,]
+set.seed(777)
+ids_small <- createDataPartition(y=trn_remain$classe, p=0.33, list=FALSE)
+trn_small2 <- trn_remain[ids_small,]
+trn_remain <- trn_remain[-ids_small,]
+set.seed(777)
+ids_small <- createDataPartition(y=trn_remain$classe, p=0.5, list=FALSE)
+trn_small3 <- trn_remain[ids_small,]
+trn_small4 <- trn_remain[-ids_small,]
+rm(ids_small,trn_remain)
+
+# Divide each of these 4 sets into training (60%) and test (40%) sets
+set.seed(777)
+inTrain <- createDataPartition(y=trn_small1$classe, p=0.6, list=FALSE)
+small_trn1 <- trn_small1[inTrain,]
+small_tst1 <- trn_small1[-inTrain,]
+set.seed(777)
+inTrain <- createDataPartition(y=trn_small2$classe, p=0.6, list=FALSE)
+small_trn2 <- trn_small2[inTrain,]
+small_tst2 <- trn_small2[-inTrain,]
+set.seed(777)
+inTrain <- createDataPartition(y=trn_small3$classe, p=0.6, list=FALSE)
+small_trn3 <- trn_small3[inTrain,]
+small_tst3 <- trn_small3[-inTrain,]
+set.seed(777)
+inTrain <- createDataPartition(y=trn_small4$classe, p=0.6, list=FALSE)
+small_trn4 <- trn_small4[inTrain,]
+small_tst4 <- trn_small4[-inTrain,]
+
+```
+
+### (5) Paramethers
+
+We decided first to try classification trees and then attemp random forest models with preprocessing and cross validation, of course, using the caret package.
+
+### (6) Evaluation
+
+### (6.a) Classification Trees 
+
+First, we run a classification tree with no extra features:
+```{r tree1, cache=TRUE}
+# Train a tree on training set 1 with no extra features
+set.seed(777)
+modFit <- train(small_trn1$classe ~ ., data = small_trn1, method = "rpart")
+print(modFit, digits=3)
+```
+We can see that the accuracy reached is 0.547, which is poor.
+
+```{r tsttree1, cache=TRUE}
+print(modFit$finalModel, digits=3)
+```
+
+```{r treeplot1, cache=TRUE}
+rpart.plot(modFit$finalModel)
+```
+
+Now, we do the same but with both preprocessing and cross validation:
+```{r tree2, cache=TRUE}
+# Train on training set 1 with both preprocessing and cross validation.
+set.seed(777)
+modFit <- train(small_trn1$classe ~ .,  
+                preProcess=c("center", "scale"), 
+                trControl=trainControl(method = "cv", number = 4), 
+                data = small_trn1, 
+method="rpart")
+print(modFit, digits=3)
+```
+Now the accuracy is 0.564, which is still poor.
+
+```{r tsttree2, cache=TRUE}
+# Run against testing set 1 with both preprocessing and cross validation
+pred <- predict(modFit, newdata=small_tst1)
+print(confusionMatrix(pred, small_tst1$classe), digits=4)
+```
+Then the overall accuracy is 0.5502, so we can see that the impact of incorporating both preprocessing and cross validation appeared to show a minimal improvement.
+
+
+### (6.b) Random Forest
+
+First we decided to assess the impact of including preprocessing in the training:
+
+```{r train1, cache=TRUE}
+# Train on training set 1 with only cross validation
+set.seed(777)
+modFit <- train(small_trn1$classe ~ ., method="rf", 
+                trControl=trainControl(method = "cv", number = 4), 
+                data=small_trn1)
+print(modFit, digits=3)
+
+```
+
+```{r test1, cache=TRUE}
+# Run against testing set 1
+pred <- predict(modFit, newdata=small_tst1)
+print(confusionMatrix(pred, small_tst1$classe), digits=4)
+```
+As we can see the training accuracy reached is 0.952 at mtry=27 with only cross validation. Now we will train only both preprocessing and cross validation to see the impact.
+
+```{r train2, cache=TRUE}
+# Train on training set 1 with only both preprocessing and cross validation
+set.seed(777)
+modFit <- train(small_trn1$classe ~ ., method="rf", 
+                preProcess=c("center", "scale"), 
+                trControl=trainControl(method = "cv", number = 4), 
+                data=small_trn1)
+print(modFit, digits=3)
+```
+
+```{r test2, cache=TRUE}
+# Run against testing set 1
+pred <- predict(modFit, newdata=small_tst1)
+print(confusionMatrix(pred, small_tst1$classe), digits=4)
+```
+Now the training accuracy reached is 0.954 at mtry=27, ie, preprocessing is upping the accuracy rate from 0.952 to 0.954, therefore we decided to apply both preprocessing and cross validation to the remaining 3 data sets.
+
+```{r train3, cache=TRUE}
+# Train on training set 2 with only both preprocessing and cross validation
+set.seed(777)
+modFit <- train(small_trn2$classe ~ ., method="rf", 
+                preProcess=c("center", "scale"), 
+                trControl=trainControl(method = "cv", number = 4), 
+                data=small_trn2)
+print(modFit, digits=3)
+```
+
+```{r test3, cache=TRUE}
+# Run against testing set 1
+pred <- predict(modFit, newdata=small_tst2)
+print(confusionMatrix(pred, small_tst2$classe), digits=4)
+```
+Now the training accuracy reached is 0.949 at mtry=27. For testing the overall accuracy is 0.9603.
+
+
+```{r train4, cache=TRUE}
+# Train on training set 3 with only both preprocessing and cross validation
+set.seed(777)
+modFit <- train(small_trn3$classe ~ ., method="rf", 
+                preProcess=c("center", "scale"), 
+                trControl=trainControl(method = "cv", number = 4), 
+                data=small_trn3)
+print(modFit, digits=3)
+```
+
+```{r test4, cache=TRUE}
+# Run against testing set 3
+pred <- predict(modFit, newdata=small_tst3)
+print(confusionMatrix(pred, small_tst3$classe), digits=4)
+```
+Now the training accuracy reached is 0.947 at mtry=27. For testing the overall accuracy is 0.9655.
+
+
+```{r train5, cache=TRUE}
+# Train on training set 4 with only both preprocessing and cross validation
+set.seed(777)
+modFit <- train(small_trn4$classe ~ ., method="rf", 
+                preProcess=c("center", "scale"), 
+                trControl=trainControl(method = "cv", number = 4), 
+                data=small_trn4)
+print(modFit, digits=3)
+```
+
+```{r test5, cache=TRUE}
+# Run against testing set 4
+pred <- predict(modFit, newdata=small_tst4)
+print(confusionMatrix(pred, small_tst4$classe), digits=4)
+```
+And finally, the training accuracy reached for the lasta data set is 0.953 at mtry=2. For testing the overall accuracy is 0.9609.
+
+
+### Conclusion
+
+By applying these models we conclude that the best accuracy is reached <b>when we use a random forest model only with both preprocessing and cross validation</b>. And the best accuracy rate is when we use the training set 3, therefore we use those result to submit this course project.
+
+
+```{r train6, cache=TRUE}
+# Train on training set 3 with only both preprocessing and cross validation
+set.seed(777)
+modFit <- train(small_trn3$classe ~ ., method="rf", 
+                preProcess=c("center", "scale"), 
+                trControl=trainControl(method = "cv", number = 4), 
+                data=small_trn3)
+print(modFit, digits=3)
+```
+
+```{r test6, cache=TRUE}
+# Run against testing set 3
+pred <- predict(modFit, newdata=small_tst3)
+print(confusionMatrix(pred, small_tst3$classe), digits=4)
+```
+
+So we run against the test set provided in the course project and get the final result:
+```{r test20, cache=TRUE}
+# Run against 20 testing set provided in the course for this project
+print(predict(modFit, newdata=tst))
+```
+
+(cc) mhsilvav
